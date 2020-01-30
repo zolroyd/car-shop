@@ -1,9 +1,9 @@
 import React from 'react';
 function CarCard(props) {
-    var color = (props.color != undefined) ?
+    var color = (props.color !== undefined) ?
         <div className="card-text"><b>Color:</b> {props.color}</div>
         : <div className="card-text"><b>Color:</b> As Shown.</div>;
-    var mileage = (props.mileage != undefined) ?
+    var mileage = (props.mileage !== undefined) ?
         <div className="card-text"><b>Mileage:</b> 116,054</div>
         : <div className="card-text"><b>Mileage:</b> Not Listed</div>;
 
@@ -18,17 +18,18 @@ function CarCard(props) {
     };
     optionsList = [optionsList, <div>...</div>];
 
-    if (props.options != undefined) {
-        var options = <div className="card-text"><b>Options:</b>
+    var options = '';
+    options = (props.options !== undefined) ??
+        <div className="card-text"><b>Options:</b>
             &emsp;
             <ul>
                 {optionsList}
             </ul>
-        </div>
-    } else var options = '';
-    if (props.carId != undefined) {
+        </div>;
+
+    if (props.carId !== undefined) {
         return <div className="card col-md-2" id={'car' + props.carId}>
-            <img className="card-img-top" src="../images/car1.jpeg" alt="Card image cap"></img>
+            <img className="card-img-top" src="../images/car1.jpeg" alt="Car cap"></img>
             <div className="card-body" style={{paddingLeft: 0}}>
                 <div className="card-title" style={{marginBottom: 0}}><b>Details</b></div>
                 {mileage}
