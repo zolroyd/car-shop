@@ -35,7 +35,7 @@ function CarCard(props) {
                 {mileage}
                 {color}
                 {options}
-                <a href="#" className="col-md-12 btn btn-primary btn-lg text-center"
+                <a href="#test" className="col-md-12 btn btn-primary btn-lg text-center"
                    style={{marginLeft: 10}}>Details</a>
             </div>
         </div>;
