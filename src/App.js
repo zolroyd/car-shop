@@ -1,9 +1,18 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import Sidebar from "react-sidebar";
+import allReducers from "./reducers";
+
+import {Provider} from "react-redux";
+import {createStore} from "redux";
+
+const store = createStore(
+  allReducers,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 
 function App() {
   var car = {
@@ -19,68 +28,57 @@ function App() {
     key: 13
   };
   return (
-    <div className="App">
-      <div className="col-md-12 col-sm-12 col-xs-12" style={{padding: 0}}>
-        <NavHeader></NavHeader>
-        <div className="row">
-          <div className="col-md-2 col-sm-2 col-sm">
-            <Filters></Filters>
-          </div>
-          <div className="col-md-8 col-sm-8 col-sm-8">
-            <CarDisplay cars={[car, car2]} x='2' y='1'></CarDisplay>
+    <Provider store={store}>
+      <div className="App">
+        <div className="col-md-12 col-sm-12 col-xs-12" style={{padding: 0}}>
+          <NavHeader></NavHeader>
+          <div className="row">
+            <div className="col-md-4 col-sm-4 col-xs-6">
+              <Filters></Filters>
+            </div>
+            <div className="col-md-8 col-sm-8 col-sm-8">
+              <CarDisplay cars={[car, car2]} x='2' y='1'></CarDisplay>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Provider>
   );
 }
 
-function Filters(props) {
-  return <div className="wrapper">
-    <nav>
-      <div className="sidebar-header">
-        <h3>Bootstrap Sidebar</h3>
-      </div>
+class Filters extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      sidebarOpen: true
+    };
+    this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
+  }
 
-      <ul className="list-unstyled components">
-        <li className="active">
-          <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false"
-             className="dropdown-toggle">Price</a>
-          <ul className="collapse list-unstyled" id="homeSubmenu">
-            <li>
-              <li>
-                <a href="#">Home 1</a>
-              </li>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="#">About</a>
-        </li>
-        <li>
-          <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false"
-             className="dropdown-toggle">Pages</a>
-          <ul className="collapse list-unstyled" id="pageSubmenu">
-            <li>
-              <a href="#">Page 1</a>
-            </li>
-            <li>
-              <a href="#">Page 2</a>
-            </li>
-            <li>
-              <a href="#">Page 3</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="#">Portfolio</a>
-        </li>
-        <li>
-          <a href="#">Contact</a>
-        </li>
-      </ul>
-    </nav>
-  </div>
+  onSetSidebarOpen(open) {
+    this.setState({sidebarOpen: open});
+  }
+
+  render() {
+    const viewHeight = window.outerHeight;
+
+    return (
+      <Sidebar
+        sidebar={
+          <button onClick={() => this.onSetSidebarOpen(false)} className="navbar-toggler" type="button" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
+          </button>
+        }
+        open={this.state.sidebarOpen}
+        onSetOpen={this.onSetSidebarOpen}
+        styles={{sidebar: {background: "black", height: viewHeight}}}
+      >
+        <button onClick={() => this.onSetSidebarOpen(true)}>
+          Open sidebar
+        </button>
+      </Sidebar>
+    );
+  }
 }
 
 function CarCard({car}) {
@@ -157,32 +155,34 @@ class CarDisplay extends React.Component {
 }
 
 function NavHeader(props) {
-  return <Navbar bg="dark" variant="dark" expand="lg">
-    <Navbar.Brand href="#home">
-      <img
-        alt=""
-        src="images/logo.png"
-        width="30"
-        height="30"
-        className="d-inline-block align-top"
-      />{' '}
-      Your website
-    </Navbar.Brand>
-    <Navbar.Toggle aria-controls="basic-navbar-nav"/>
-    <Navbar.Collapse id="basic-navbar-nav">
-      <Nav className="mr-auto">
-        <Nav.Link href="#home">Home</Nav.Link>
-        <Nav.Link href="#link">Link</Nav.Link>
-        <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-          <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-          <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-          <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-          <NavDropdown.Divider/>
-          <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-        </NavDropdown>
-      </Nav>
-    </Navbar.Collapse>
-  </Navbar>;
+  return (
+    <Navbar bg="dark" variant="dark" expand="lg">
+      <Navbar.Brand href="#home">
+        <img
+          alt=""
+          src="images/logo.png"
+          width="30"
+          height="30"
+          className="d-inline-block align-top"
+        />{' '}
+        Your website
+      </Navbar.Brand>
+      <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+      <Navbar.Collapse id="basic-navbar-nav">
+        <Nav className="mr-auto">
+          <Nav.Link href="#home">Home</Nav.Link>
+          <Nav.Link href="#link">Link</Nav.Link>
+          <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+            <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+            <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
+            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+            <NavDropdown.Divider/>
+            <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+          </NavDropdown>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
+  );
 }
 
 export default App;
